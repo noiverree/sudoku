@@ -32,8 +32,6 @@ void GameManager::TrySetCell(int x, int y, int value)
 
     ValidationResult validateResult = board.SetCell(x, y, value);
 
-    board.DrawBoard();
-
     if (!validateResult.IsValid)
     {
         cout << "Cell set failed: " << validateResult.Message << endl;
