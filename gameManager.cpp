@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include "board.cpp"
+#include "templateExtractor.cpp"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class GameManager
     public:
         void TrySetCell(int x, int y, int value);
         bool GenerateBoard(int row, int col, default_random_engine& seed);
+        bool GenerateBoardFromTemplate();
         void AskInput();
         void DrawBoard() { board.DrawBoard(); }
         void EraseCells(int amount, default_random_engine& seed);
@@ -81,6 +83,33 @@ bool GameManager::GenerateBoard(int row, int col, default_random_engine& seed)
     }
 
     return false;
+}
+
+bool GameManager::GenerateBoardFromTemplate()
+{
+    string path = "Templates/template1.txt";
+
+    TemplateExtractor templateExtractor = TemplateExtractor();
+
+    vector<vector<int>> cellData = templateExtractor.ExtractTemplate(path);
+
+    for (int i = 0; i < 9; ++i) 
+    {
+        for (int j = 0; j < 9; ++j) 
+        {
+            if (cellData[i][j] == 0)
+            {
+                board.ClearCell(i, j);
+                ++CellsRemaining;
+                continue;
+            }
+            
+            board.GenerateCell(i, j, cellData[i][j]);
+            --CellsRemaining;
+        }
+    }
+
+    return true;
 }
 
 void GameManager::EraseCells(int amount, default_random_engine& seed)
